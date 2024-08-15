@@ -33,6 +33,7 @@ func GetTotalTickets(destination string) (int, error) {
 
 	totalTickets := 0
 
+	//reading the csv and spliting it with a coma
 	for i := 0; i < len(data); i++ {
 		line := strings.Split(data[i], ",")
 
@@ -40,12 +41,14 @@ func GetTotalTickets(destination string) (int, error) {
 			continue
 		}
 
+		//country is the country from each line on csv file, destination is from the string we pass to the function
 		country := line[3]
 		if country == destination {
 			totalTickets++
 		}
 	}
 
+	//in case arent tickets purchased
 	if totalTickets == 0 {
 		fmt.Printf("No tickets have been purchased for that destination")
 		return 0, fmt.Errorf("destination not found")
@@ -55,7 +58,7 @@ func GetTotalTickets(destination string) (int, error) {
 	return totalTickets, nil
 }
 
-// // Second asignement, get all tickets for people traveling in specific period of time
+// Second requeriment, get all tickets for people traveling in specific period of time
 func GetCountByPeriod(time string) (int, error) {
 	data, err := ReadTickets("./tickets.csv")
 	if err != nil {
@@ -67,6 +70,7 @@ func GetCountByPeriod(time string) (int, error) {
 	periodMax := 0
 	totalPeriod := 0
 
+	//depending on the time string we get from the function, have 4 cases of periods
 	switch time {
 	case "madrugada":
 		periodMin = 0
@@ -85,6 +89,7 @@ func GetCountByPeriod(time string) (int, error) {
 		return 1, nil
 	}
 
+	//spliting the csv against a coma for have the data cleared
 	for i := 0; i < len(data); i++ {
 		line := strings.Split(data[i], ",")
 
@@ -92,15 +97,18 @@ func GetCountByPeriod(time string) (int, error) {
 			continue
 		}
 
+		//this is the hours and minutes we get from csv example "17:34"
 		hoursAndMinutes := line[4]
+		//here we split it against ":" for get in this case "17"
 		hours := strings.Split(hoursAndMinutes, ":")
+		//we parse it as int for use numeric expresions
 		hourInt, err := strconv.Atoi(hours[0])
-
 		if err != nil {
 			fmt.Println("Error converting hours to int:", err)
 
 		}
 
+		//depending on the case, we compare the min and max hour from that period, against the one we insert on the function and count if checks
 		if hourInt >= periodMin && hourInt <= periodMax {
 			totalPeriod++
 		}
@@ -113,11 +121,27 @@ func GetCountByPeriod(time string) (int, error) {
 	}
 	fmt.Printf("Total people traveling in %s: %d\n", time, totalPeriod)
 
-	return 1, nil
+	return totalPeriod, nil
 
 }
 
-// // ejemplo 3
-// func AverageDestination(destination string, total int) (int, error) {
+// Third requeriment, percentage of people traveling on a specific country on one day
+func PercentageDestination(destination string, total int) (float64, error) {
 
-// }
+	// calling first requeriment function and asignt the return on a variable
+	peopleTraveling, err := GetTotalTickets(destination)
+	if err != nil {
+		return 0, fmt.Errorf("error getting total tickets for destination: %v", err)
+	}
+
+	// check if tickets isnt 0 for avoid exception
+	if total == 0 {
+		return 0, fmt.Errorf("total tickets cannot be zero")
+	}
+
+	// percentage calculation
+	percentage := (float64(peopleTraveling) / float64(total)) * 100
+	fmt.Printf("Percentage of people traveling to %s: %.2f%%\n", destination, percentage)
+
+	return percentage, nil
+}

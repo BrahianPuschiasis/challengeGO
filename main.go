@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	// tickets.GetTotalTickets("Poland")
+	tickets.GetTotalTickets("Brazil")
 	tickets.GetCountByPeriod("madrugada")
-
+	tickets.PercentageDestination("Poland", 1000)
 }
