@@ -50,11 +50,11 @@ func GetTotalTickets(destination string) (int, error) {
 
 	//in case arent tickets purchased
 	if totalTickets == 0 {
-		fmt.Printf("No tickets have been purchased for that destination")
+		// fmt.Printf("No tickets have been purchased for that destination")
 		return 0, fmt.Errorf("destination not found")
 	}
 
-	fmt.Printf("Total tickets for %s: %d\n", destination, totalTickets)
+	// fmt.Printf("Total tickets for %s: %d\n", destination, totalTickets)
 	return totalTickets, nil
 }
 
@@ -85,8 +85,7 @@ func GetCountByPeriod(time string) (int, error) {
 		periodMin = 20
 		periodMax = 23
 	default:
-		fmt.Println("Invalid period")
-		return 1, nil
+		return 0, fmt.Errorf("invalid period: %s", time) // Devolver un error apropiado
 	}
 
 	//spliting the csv against a coma for have the data cleared
@@ -116,10 +115,9 @@ func GetCountByPeriod(time string) (int, error) {
 	}
 
 	if totalPeriod == 0 {
-		fmt.Printf("No tickets have been purchased for that destination")
-		return 0, fmt.Errorf("destination not found")
+		return 0, fmt.Errorf("no tickets have been purchased for that destination")
 	}
-	fmt.Printf("Total people traveling in %s: %d\n", time, totalPeriod)
+	// fmt.Printf("Total people traveling in %s: %d\n", time, totalPeriod)
 
 	return totalPeriod, nil
 
@@ -141,7 +139,7 @@ func PercentageDestination(destination string, total int) (float64, error) {
 
 	// percentage calculation
 	percentage := (float64(peopleTraveling) / float64(total)) * 100
-	fmt.Printf("Percentage of people traveling to %s: %.2f%%\n", destination, percentage)
+	// fmt.Printf("Percentage of people traveling to %s: %.2f%%\n", destination, percentage)
 
 	return percentage, nil
 }
