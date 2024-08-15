@@ -5,8 +5,7 @@ import (
 )
 
 func main() {
-	total, err := tickets.GetTotalTickets("Brazil")
-	
-
+	// tickets.GetTotalTickets("Poland")
+	tickets.GetCountByPeriod("madrugada")
 
 }
