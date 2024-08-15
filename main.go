@@ -9,7 +9,7 @@ import (
 func main() {
 
 	destination := "Brazil"
-	period := "noche"
+	period := "tarde"
 	countryPercentage := "Poland"
 	totalTickets := 1000
 

@@ -129,7 +129,7 @@ func PercentageDestination(destination string, total int) (float64, error) {
 	// calling first requeriment function and asignt the return on a variable
 	peopleTraveling, err := GetTotalTickets(destination)
 	if err != nil {
-		return 0, fmt.Errorf("error getting total tickets for destination: %v", err)
+		return 0, fmt.Errorf("getting total tickets for destination: %v", err)
 	}
 
 	// check if tickets isnt 0 for avoid exception
