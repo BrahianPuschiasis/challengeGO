@@ -8,30 +8,42 @@ import (
 
 func main() {
 
+	destination := "Brazil"
+	period := "noche"
+	countryPercentage := "Poland"
+	totalTickets := 1000
+
 	//First requeriment call
-	destination := "Venezuela"
-	totalTickets, err := tickets.GetTotalTickets(destination)
-	if err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Printf("Total tickets for %s: %d\n", destination, totalTickets)
-	}
+	go func() {
+		total, err := tickets.GetTotalTickets(destination)
+		if err != nil {
+			fmt.Println("Error getting total tickets:", err)
+			return
+		}
+		fmt.Printf("Total tickets for %s: %d\n", destination, total)
+	}()
 
 	//Second requeriment call
-	period := "noche"
-	totalPeriod, err := tickets.GetCountByPeriod(period)
-	if err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Printf("Total people traveling in %s: %d\n", period, totalPeriod)
-	}
+	go func() {
+		count, err := tickets.GetCountByPeriod(period)
+		if err != nil {
+			fmt.Println("Error getting count by period:", err)
+			return
+		}
+		fmt.Printf("Total people traveling in %s: %d\n", period, count)
+	}()
 
 	//Third requeriment call
-	country := "Brazil"
-	percentage, err := tickets.PercentageDestination(country, 1000)
-	if err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Printf("Percentage of people traveling to %s: %.2f%%\n", destination, percentage)
-	}
+	go func() {
+		percentage, err := tickets.PercentageDestination(countryPercentage, totalTickets)
+		if err != nil {
+			fmt.Println("Error getting percentage:", err)
+			return
+		}
+		fmt.Printf("Percentage of people traveling to %s: %.2f%%\n", countryPercentage, percentage)
+	}()
+
+	//Wait until the user press a key for stop
+	fmt.Scanln()
+
 }
