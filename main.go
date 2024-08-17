@@ -8,10 +8,9 @@ import (
 )
 
 func main() {
-
-	destination := "Brazil"
-	period := "madrugada"
-	countryPercentage := "Poland"
+	destination := "Venezuela"
+	period := "tarde"
+	countryPercentage := "Colombia"
 	totalTickets := 1000
 
 	list, err := tickets.MakeList("./tickets.csv")
@@ -20,37 +19,57 @@ func main() {
 		os.Exit(1)
 	}
 
-	//First requeriment call
-	go func() {
+	// making the channels
+	totalTicketsCh := make(chan int)
+	countByPeriodCh := make(chan int)
+	percentageCh := make(chan float64)
+	errorCh := make(chan error, 3) // channel for errors
+
+	// First Requeriment
+	go func(destination string, list []tickets.Ticket) {
 		total, err := tickets.GetTotalTickets(destination, list)
 		if err != nil {
-			fmt.Println("Error getting total tickets:", err)
+			errorCh <- err
 			return
 		}
-		fmt.Printf("Total tickets for %s: %d\n", destination, total)
-	}()
+		totalTicketsCh <- total
+	}(destination, list)
 
-	//Second requeriment call
-	go func() {
+	// Second Requeriment
+	go func(period string, list []tickets.Ticket) {
 		count, err := tickets.GetCountByPeriod(period, list)
 		if err != nil {
-			fmt.Println("Error getting count by period:", err)
+			errorCh <- err
 			return
 		}
-		fmt.Printf("Total people traveling in %s: %d\n", period, count)
-	}()
+		countByPeriodCh <- count
+	}(period, list)
 
-	//Third requeriment call
-	go func() {
+	// Third Requeriment
+	go func(countryPercentage string, totalTickets int, list []tickets.Ticket) {
 		percentage, err := tickets.PercentageDestination(countryPercentage, totalTickets, list)
 		if err != nil {
-			fmt.Println("Error getting percentage:", err)
+			errorCh <- err
 			return
 		}
-		fmt.Printf("Percentage of people traveling to %s: %.2f%%\n", countryPercentage, percentage)
-	}()
+		percentageCh <- percentage
+	}(countryPercentage, totalTickets, list)
 
-	// //Wait until the user press a key for stop
+	// Results prints in console
+	for i := 0; i < 3; i++ {
+		select {
+		case total := <-totalTicketsCh:
+			fmt.Printf("Total tickets for %s: %d\n", destination, total)
+		case count := <-countByPeriodCh:
+			fmt.Printf("Total people traveling in %s: %d\n", period, count)
+		case percentage := <-percentageCh:
+			fmt.Printf("Percentage of people traveling to %s: %.2f%%\n", countryPercentage, percentage)
+		case err := <-errorCh:
+			fmt.Println("Error:", err)
+		}
+	}
+
+	// press a key to stop the exection
 	fmt.Scanln()
 
 }
