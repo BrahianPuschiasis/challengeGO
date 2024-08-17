@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/bootcamp-go/desafio-go-bases/internal/tickets"
 )
@@ -9,13 +10,19 @@ import (
 func main() {
 
 	destination := "Brazil"
-	period := "tarde"
+	period := "madrugada"
 	countryPercentage := "Poland"
 	totalTickets := 1000
 
+	list, err := tickets.MakeList("./tickets.csv")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	//First requeriment call
 	go func() {
-		total, err := tickets.GetTotalTickets(destination)
+		total, err := tickets.GetTotalTickets(destination, list)
 		if err != nil {
 			fmt.Println("Error getting total tickets:", err)
 			return
@@ -25,7 +32,7 @@ func main() {
 
 	//Second requeriment call
 	go func() {
-		count, err := tickets.GetCountByPeriod(period)
+		count, err := tickets.GetCountByPeriod(period, list)
 		if err != nil {
 			fmt.Println("Error getting count by period:", err)
 			return
@@ -35,7 +42,7 @@ func main() {
 
 	//Third requeriment call
 	go func() {
-		percentage, err := tickets.PercentageDestination(countryPercentage, totalTickets)
+		percentage, err := tickets.PercentageDestination(countryPercentage, totalTickets, list)
 		if err != nil {
 			fmt.Println("Error getting percentage:", err)
 			return
@@ -43,7 +50,7 @@ func main() {
 		fmt.Printf("Percentage of people traveling to %s: %.2f%%\n", countryPercentage, percentage)
 	}()
 
-	//Wait until the user press a key for stop
+	// //Wait until the user press a key for stop
 	fmt.Scanln()
 
 }
