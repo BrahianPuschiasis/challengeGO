@@ -66,6 +66,10 @@ func GetTotalTickets(destination string, tickets []Ticket) (int, error) {
 		}
 	}
 
+	if total == 0 {
+		return 0, fmt.Errorf("no tickets buyed for that destination")
+	}
+
 	return total, nil
 }
 
@@ -140,6 +144,10 @@ func PercentageDestination(destination string, total int, tickets []Ticket) (flo
 
 	// percentage calculation
 	percentage := (float64(peopleTraveling) / float64(total)) * 100
+
+	if peopleTraveling == 0 {
+		return 0, fmt.Errorf("no tickets buyed for that destination")
+	}
 
 	return percentage, nil
 }

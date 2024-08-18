@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	destination := "Venezuela"
-	period := "tarde"
-	countryPercentage := "Colombia"
+	destination := "Poland"
+	period := "noche"
+	countryPercentage := "Brazil"
 	totalTickets := 1000
 
 	list, err := tickets.MakeList("./tickets.csv")
